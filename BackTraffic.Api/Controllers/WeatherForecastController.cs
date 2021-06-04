@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Web.Http.Routing;
 
 namespace BackTraffic.Api.Controllers
 {
@@ -28,12 +29,24 @@ namespace BackTraffic.Api.Controllers
         }
 
         [HttpGet]
+        [Route("GetIncidents")]
         public async Task<string> GetAsync()
         {
             var request = new HttpClient();
-            var response = await request.GetAsync("https://www.mapquestapi.com/traffic/v2/incidents?&outFormat=json&boundingBox=34.158977272273354%2C-118.01273345947266%2C33.945638452963024%2C-118.47415924072267&filters=construction%2Cincidents%2Cevent%2Ccongestion&key=RXsJGiT4Bxvr6vHtcwTCdcFMbrUGhGq3");
+            var response = await request.GetAsync("http://www.mapquestapi.com/traffic/v2/incidents?key=RXsJGiT4Bxvr6vHtcwTCdcFMbrUGhGq3&boundingBox=39.95,-105.25,39.52,-104.71&filters=construction,incidents,event,congestion");
             var customerJsonString  =await response.Content.ReadAsStringAsync();
            // var cust = JsonConvert.DeserializeObject<Response>(customerJsonString);
+            return customerJsonString;
+        }
+
+        [HttpGet]
+        [Route("GetIncidentsWithParams")]
+        public async Task<string> GetWithParamsAsync(string boundingBox)
+        {
+            var request = new HttpClient();
+            var response = await request.GetAsync($"http://www.mapquestapi.com/traffic/v2/incidents?key=RXsJGiT4Bxvr6vHtcwTCdcFMbrUGhGq3&boundingBox={ boundingBox }&filters=construction,incidents,event,congestion");
+            var customerJsonString = await response.Content.ReadAsStringAsync();
+            // var cust = JsonConvert.DeserializeObject<Response>(customerJsonString);
             return customerJsonString;
         }
     }
